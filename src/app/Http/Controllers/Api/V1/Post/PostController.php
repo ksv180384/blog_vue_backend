@@ -1,0 +1,81 @@
+<?php
+
+namespace App\Http\Controllers\Api\V1\Post;
+
+use App\Http\Controllers\Controller;
+use App\Http\Resources\Post\PostCollection;
+use App\Http\Resources\Post\PostCommentCollection;
+use App\Http\Resources\Post\PostResource;
+use App\Services\PostCommentService;
+use App\Services\PostService;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
+class PostController extends Controller
+{
+    /**
+     * @var PostService
+     */
+    private $postService;
+
+    /**
+     * @var PostCommentService
+     */
+    private $postCommentService;
+
+    public function __construct(
+        PostService $postService,
+        PostCommentService $postCommentService
+    )
+    {
+        $this->middleware('auth')->only(['up', 'down']);
+
+        $this->postService = $postService;
+        $this->postCommentService = $postCommentService;
+    }
+
+    public function posts()
+    {
+        $posts = $this->postService->getPosts();
+
+        return new PostCollection($posts);
+
+    }
+
+    public function show($id)
+    {
+        $post = $this->postService->getById($id);
+        $postComments = $this->postCommentService->commentsParentByPost($id);
+        $user = Auth::check() ? Auth::user() : null;
+
+        return response()->json([
+            'post' => new PostResource($post),
+            'comments' => new PostCommentCollection($postComments),
+            'user' => $user,
+        ]);
+    }
+
+    /**
+     * Лайк (поднимает пост в рейтинге)
+     * @param Request $request
+     * @return PostResource
+     */
+    public function up(Request $request){
+
+        $post = $this->postService->up($request->id);
+
+        return new PostResource($post);
+    }
+
+    /**
+     * Дислайк (опускает пост в рейтинге)
+     * @param Request $request
+     * @return PostResource
+     */
+    public function down(Request $request){
+
+        $post = $this->postService->down($request->id);
+
+        return new PostResource($post);
+    }
+}
