@@ -16,7 +16,7 @@ class PostCommentResource extends JsonResource
      * Transform the resource into an array.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return array|\Illuminate\Contracts\Support\Arrayable|\JsonSerializable
+     * @return array|\Illuminate\Contracts\Support\Arrayable|\JsonSerializable|array
      */
     public function toArray($request)
     {
@@ -35,7 +35,7 @@ class PostCommentResource extends JsonResource
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'created_at_humans' => $this->created_at_humans,
-            'children' => !empty($this->children) ? $this->children : null,
+            'children' => !empty($this->children) ? new PostCommentCollection($this->children) : null,
         ];
     }
 }

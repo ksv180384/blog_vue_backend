@@ -48,6 +48,7 @@ class PostCommentService
     {
         $postComments = PostComment::commentsPost()
             ->where('post_id', $id)
+            ->orderByDesc('created_at')
             ->get();
 
         return $postComments;
@@ -63,6 +64,7 @@ class PostCommentService
         $postComments = PostComment::commentsPost()
             ->where('branch_id', $branchId)
             ->orWhere('id', $branchId)
+            ->orderByDesc('created_at')
             ->get();
 
         return $postComments;
@@ -113,6 +115,8 @@ class PostCommentService
         $postComments = PostComment::commentsPost()
             ->where('post_id', $postId)
             ->whereNull('parent_id')
+            ->orderByDesc('created_at')
+            ->orderByDesc('created_at')
             ->get();
 
         return $postComments;
