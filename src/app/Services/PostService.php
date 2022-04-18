@@ -59,7 +59,7 @@ class PostService
             })
             ->with(['author:id,name,avatar', 'status:id,title', 'useUating'])
             ->withCount(['up', 'down'])
-            ->paginate(5);
+            ->paginate(10);
 
         return $posts;
     }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1\Post;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Post\UpdateRatingRequest;
 use App\Http\Resources\Post\PostCollection;
 use App\Http\Resources\Post\PostCommentCollection;
 use App\Http\Resources\Post\PostResource;
@@ -57,10 +58,10 @@ class PostController extends Controller
 
     /**
      * Лайк (поднимает пост в рейтинге)
-     * @param Request $request
+     * @param UpdateRatingRequest $request
      * @return PostResource
      */
-    public function up(Request $request){
+    public function up(UpdateRatingRequest $request){
 
         $post = $this->postService->up($request->id);
 
@@ -69,10 +70,10 @@ class PostController extends Controller
 
     /**
      * Дислайк (опускает пост в рейтинге)
-     * @param Request $request
+     * @param UpdateRatingRequest $request
      * @return PostResource
      */
-    public function down(Request $request){
+    public function down(UpdateRatingRequest $request){
 
         $post = $this->postService->down($request->id);
 
