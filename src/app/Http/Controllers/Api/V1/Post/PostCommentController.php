@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1\Post;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Post\CreatePostCommentRequest;
+use App\Http\Requests\Post\UpdateRatingPostComment;
 use App\Http\Resources\Post\PostCommentCollection;
 use App\Http\Resources\Post\PostCommentResource;
 use App\Models\Post\PostComment;
@@ -71,10 +72,10 @@ class PostCommentController extends Controller
 
     /**
      * Лайк (поднимает коммент в рейтинге)
-     * @param Request $request
+     * @param UpdateRatingPostComment $request
      * @return PostCommentResource
      */
-    public function up(Request $request){
+    public function up(UpdateRatingPostComment $request){
 
         $comment = $this->postCommentService->up($request->id);
         return new PostCommentResource($comment);
@@ -82,10 +83,10 @@ class PostCommentController extends Controller
 
     /**
      * Дислайк (опускает коммент в рейтинге)
-     * @param Request $request
+     * @param UpdateRatingPostComment $request
      * @return PostCommentResource
      */
-    public function down(Request $request){
+    public function down(UpdateRatingPostComment $request){
 
         $comment = $this->postCommentService->down($request->id);
         return new PostCommentResource($comment);

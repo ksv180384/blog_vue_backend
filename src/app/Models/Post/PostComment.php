@@ -40,12 +40,20 @@ class PostComment extends Model
     }
 
     /**
-     * Комментарии
+     * Комментарии ветки
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     function comments(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(PostComment::class, 'branch_id', 'id');
+    }
+
+    /**
+     * Дочернии комментарии
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function children(){
+        return $this->hasMany(PostComment::class, 'parent_id', 'id');
     }
 
     /**

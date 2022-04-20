@@ -113,6 +113,8 @@ class PostCommentService
     public function commentsParentByPost($postId)
     {
         $postComments = PostComment::commentsPost()
+            ->withCount(['children'])
+            ->with(['children'])
             ->where('post_id', $postId)
             ->whereNull('parent_id')
             ->orderByDesc('created_at')

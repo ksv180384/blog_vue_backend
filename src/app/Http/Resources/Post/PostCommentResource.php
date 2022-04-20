@@ -36,6 +36,7 @@ class PostCommentResource extends JsonResource
             'updated_at' => $this->updated_at,
             'created_at_humans' => $this->created_at_humans,
             'children' => !empty($this->children) ? new PostCommentCollection($this->children) : null,
+            'children_count' => $this->children_count,
         ];
     }
 }
