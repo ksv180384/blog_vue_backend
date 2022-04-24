@@ -34,6 +34,7 @@ Route::get('/posts', [\App\Http\Controllers\Api\V1\Post\PostController::class, '
 Route::get('/post/{id}', [\App\Http\Controllers\Api\V1\Post\PostController::class, 'show']);
 Route::post('/post/up', [\App\Http\Controllers\Api\V1\Post\PostController::class, 'up']);
 Route::post('/post/down', [\App\Http\Controllers\Api\V1\Post\PostController::class, 'down']);
+Route::post('/post/create', [\App\Http\Controllers\Api\V1\Post\PostController::class, 'store']);
 
 // comments
 Route::get('/post/comments/{postId}', [\App\Http\Controllers\Api\V1\Post\PostCommentController::class, 'commentsByPost']);

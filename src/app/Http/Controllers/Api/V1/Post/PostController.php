@@ -56,12 +56,18 @@ class PostController extends Controller
         ]);
     }
 
+    public function store(Request $request)
+    {
+        dd($request->all());
+    }
+
     /**
      * Лайк (поднимает пост в рейтинге)
      * @param UpdateRatingRequest $request
      * @return PostResource
      */
-    public function up(UpdateRatingRequest $request){
+    public function up(UpdateRatingRequest $request)
+    {
 
         $post = $this->postService->up($request->id);
 
@@ -73,7 +79,8 @@ class PostController extends Controller
      * @param UpdateRatingRequest $request
      * @return PostResource
      */
-    public function down(UpdateRatingRequest $request){
+    public function down(UpdateRatingRequest $request)
+    {
 
         $post = $this->postService->down($request->id);
 
