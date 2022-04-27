@@ -3,13 +3,13 @@
 namespace App\Http\Controllers\Api\V1\Post;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Post\CreatePostRequest;
 use App\Http\Requests\Post\UpdateRatingRequest;
 use App\Http\Resources\Post\PostCollection;
 use App\Http\Resources\Post\PostCommentCollection;
 use App\Http\Resources\Post\PostResource;
 use App\Services\PostCommentService;
 use App\Services\PostService;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class PostController extends Controller
@@ -56,9 +56,15 @@ class PostController extends Controller
         ]);
     }
 
-    public function store(Request $request)
+    /**
+     * Добавляем пост
+     * @param CreatePostRequest $request
+     * @return PostResource
+     */
+    public function store(CreatePostRequest $request)
     {
-        dd($request->all());
+        $post = $this->postService->create($request->validated());
+        return new PostResource($post);
     }
 
     /**

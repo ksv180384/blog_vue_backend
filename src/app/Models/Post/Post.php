@@ -65,6 +65,14 @@ class Post extends Model
         return $this->hasMany(PostUp::class)->where('up', '=', 2);
     }
 
+    /**
+     * Картинки поста
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function images(){
+        return $this->hasMany(PostImage::class);
+    }
+
     public function useUating(){
         $userId = Auth::check() ? Auth::id() : 0;
         return $this->hasOne(PostUp::class)->where('user_id', '=', $userId);

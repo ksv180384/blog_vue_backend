@@ -21,8 +21,6 @@ class PostFactory extends Factory
 
         return [
             'title' => $this->faker->sentence(5),
-            'preview' => $this->faker->text(400),
-            'preview_img' => 'https://source.unsplash.com/random',
             'content' => $this->faker->text(3000),
             'author_id' => $author->id,
             'status_id' => 2,

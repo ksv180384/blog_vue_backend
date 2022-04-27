@@ -24,8 +24,7 @@ class CreatePostsTable extends Migration
         Schema::create('posts', function (Blueprint $table) {
             $table->id();
             $table->string('title')->default(null)->nullable()->comment('название поста');
-            $table->string('preview', 500)->default(null)->nullable()->comment('превью содержимого поста');
-            $table->string('preview_img')->default(null)->nullable()->comment('превью картинка поста');
+
             $table->text('content')->default(null)->nullable()->comment('текст поста');
             $table->unsignedBigInteger('status_id')->nullable()->default(null)->comment('статус поста');
             $table->unsignedBigInteger('author_id')->nullable()->comment('автор поста');
