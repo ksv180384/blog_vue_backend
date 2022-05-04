@@ -13,15 +13,12 @@ class Post extends Model
 
     protected $fillable = [
         'title',
-        'preview',
-        'preview_img',
         'content',
-        'hidden',
-        'author_id',
         'status_id',
+        'author_id',
     ];
 
-    protected $appends = ['created_at_humans'];
+    protected $appends = ['created_at_humans', 'first_image'];
 
     /**
      * Автор поста
@@ -30,6 +27,15 @@ class Post extends Model
     function author(): \Illuminate\Database\Eloquent\Relations\HasOne
     {
         return $this->hasOne(User::class, 'id', 'author_id');
+    }
+
+    /**
+     * Картинки поста
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    function images(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(PostImage::class, 'post_id', 'id');
     }
 
     /**
@@ -45,7 +51,8 @@ class Post extends Model
      * Родительские комментарии, исключены ответы к комментариям
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function commentsParent(){
+    public function commentsParent(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
         return $this->hasMany(PostComment::class)->orderByDesc('created_at')->limit(3);
     }
 
@@ -53,7 +60,8 @@ class Post extends Model
      * Лайки поста
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function up(){
+    public function up(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
         return $this->hasMany(PostUp::class)->where('up', '=', 1);
     }
 
@@ -66,14 +74,10 @@ class Post extends Model
     }
 
     /**
-     * Картинки поста
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
-    public function images(){
-        return $this->hasMany(PostImage::class);
-    }
-
-    public function useUating(){
+    public function useRating(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
         $userId = Auth::check() ? Auth::id() : 0;
         return $this->hasOne(PostUp::class)->where('user_id', '=', $userId);
     }
@@ -86,6 +90,11 @@ class Post extends Model
     public function getRatingAttribute()
     {
         return $this->up_count - $this->down_count;
+    }
+
+    public function getFirstImageAttribute()
+    {
+        return $this->images ? $this->images->first() : null;
     }
 
 }

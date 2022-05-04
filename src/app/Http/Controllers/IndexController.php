@@ -11,11 +11,6 @@ class IndexController extends Controller
     {
         $post = Post::find(1);
 
-        $imgUrl = $post->getFirstMediaURL('posts', 'small');
-
-        //dd($post->getMedia('posts')->first()->getUrl());
-
-        return '<img src="' . $imgUrl . '">';
 
         return view('welcome');
     }

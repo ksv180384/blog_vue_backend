@@ -22,13 +22,14 @@ class PostResource extends JsonResource
      */
     public function toArray($request)
     {
-        $useRating = !empty($this->useUating) ? $this->useUating->up : null;
+        $useRating = !empty($this->useRating) ? $this->useRating->up : null;
 
         return [
             'id' => $this->id,
             'title' => $this->title,
-            'preview_img' => $this->preview_img,
-            'preview' => $this->preview,
+            'content' => $this->content,
+            'images' => $this->images ? (new PostImageCollection($this->images))->slice(1)->all() : null,
+            'first_image' => new PostImageResource($this->first_image),
             'up_count' => $this->up_count,
             'down_count' => $this->down_count,
             'author' => $this->author,

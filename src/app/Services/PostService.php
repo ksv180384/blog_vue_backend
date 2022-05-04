@@ -19,8 +19,7 @@ class PostService
         $post = Post::select([
             'posts.id',
             'posts.title',
-            'posts.preview_img',
-            'posts.preview',
+            'posts.content',
             'posts.status_id',
             'posts.author_id',
             'posts.created_at',
@@ -30,7 +29,7 @@ class PostService
             ->leftJoin('post_ups', function($join) use ($userId) {
                 $join->on('post_ups.post_id', '=', 'posts.id')->where('post_ups.user_id', '=', $userId);
             })
-            ->with(['author:id,name,avatar', 'status:id,title'])
+            ->with(['author:id,name,avatar', 'status:id,title', 'images:id,post_id,path'])
             ->withCount(['up', 'down'])
             ->find($id);
 
@@ -49,8 +48,7 @@ class PostService
         $posts = Post::select([
             'posts.id',
             'posts.title',
-            'posts.preview_img',
-            'posts.preview',
+            'posts.content',
             'posts.status_id',
             'posts.author_id',
             'posts.created_at',
@@ -60,8 +58,9 @@ class PostService
             ->leftJoin('post_ups', function($join) use ($userId) {
                 $join->on('post_ups.post_id', '=', 'posts.id')->where('post_ups.user_id', '=', $userId);
             })
-            ->with(['author:id,name,avatar', 'status:id,title', 'useUating'])
+            ->with(['author:id,name,avatar', 'status:id,title', 'useRating', 'images:id,post_id,path'])
             ->withCount(['up', 'down'])
+            ->orderByDesc('created_at')
             ->paginate(10);
 
         return $posts;
