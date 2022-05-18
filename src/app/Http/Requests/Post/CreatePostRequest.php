@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Post;
 
+use App\Models\Post\PostStatus;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
@@ -28,6 +29,7 @@ class CreatePostRequest extends FormRequest
             'title' => 'required|min:2',
             'content' => 'required|min:2',
             'images.*.src' => 'base64image',
+            'status_id' => 'exists:post_statuses,id',
         ];
     }
 
@@ -43,6 +45,27 @@ class CreatePostRequest extends FormRequest
             'title.min' => 'Слишком короткое название поста',
             'content.required' => 'Введите текст поста',
             'content.min' => 'Слишком короткий текст поста',
+            'status_id.exists' => 'Неверный статус',
         ];
+    }
+
+    /**
+     * Prepare the data for validation.
+     *
+     * @return void
+     */
+    protected function prepareForValidation()
+    {
+        $data = $this->all();
+
+        if(!empty($data['published'])){
+            $status = PostStatus::where('slug', 'opublikovan')->first();
+        }else{
+            $status = PostStatus::where('slug', 'cernovik')->first();
+        }
+
+        $this->merge([
+            'status_id' => $status->id,
+        ]);
     }
 }

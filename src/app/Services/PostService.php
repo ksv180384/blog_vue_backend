@@ -76,7 +76,7 @@ class PostService
         $post = Post::create([
             'title' => $postData['title'],
             'content' => $postData['content'],
-            'status_id' => 2,
+            'status_id' => $postData['status_id'],
             'author_id' => Auth::id(),
         ]);
 
