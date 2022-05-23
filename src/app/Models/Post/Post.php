@@ -97,4 +97,23 @@ class Post extends Model
         return $this->images ? $this->images->first() : null;
     }
 
+    public function scopePostsList($query, $userId)
+    {
+        return $query->select([
+            'posts.id',
+            'posts.title',
+            'posts.content',
+            'posts.status_id',
+            'posts.author_id',
+            'posts.created_at',
+            'posts.updated_at',
+            'post_ups.up'
+        ])
+            ->leftJoin('post_ups', function($join) use ($userId) {
+                $join->on('post_ups.post_id', '=', 'posts.id')->where('post_ups.user_id', '=', $userId);
+            })
+            ->with(['author:id,name,avatar', 'status:id,title', 'useRating', 'images:id,post_id,path'])
+            ->withCount(['up', 'down']);
+    }
+
 }

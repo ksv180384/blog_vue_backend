@@ -45,22 +45,17 @@ class PostService
 
         $userId = Auth::check() ? Auth::id() : 0;
 
-        $posts = Post::select([
-            'posts.id',
-            'posts.title',
-            'posts.content',
-            'posts.status_id',
-            'posts.author_id',
-            'posts.created_at',
-            'posts.updated_at',
-            'post_ups.up'
-        ])
-            ->leftJoin('post_ups', function($join) use ($userId) {
-                $join->on('post_ups.post_id', '=', 'posts.id')->where('post_ups.user_id', '=', $userId);
-            })
-            ->with(['author:id,name,avatar', 'status:id,title', 'useRating', 'images:id,post_id,path'])
-            ->withCount(['up', 'down'])
+        $posts = Post::postsList($userId)
             ->orderByDesc('created_at')
+            ->paginate(10);
+
+        return $posts;
+    }
+
+    public function getPostsByUserId($userId){
+        $posts = Post::postsList($userId)
+            ->orderByDesc('created_at')
+            ->where('posts.author_id', $userId)
             ->paginate(10);
 
         return $posts;

@@ -29,7 +29,7 @@ class PostController extends Controller
         PostCommentService $postCommentService
     )
     {
-        $this->middleware('auth')->only(['up', 'down']);
+        $this->middleware('auth')->only(['myPosts', 'store', 'up', 'down']);
 
         $this->postService = $postService;
         $this->postCommentService = $postCommentService;
@@ -41,6 +41,15 @@ class PostController extends Controller
 
         return new PostCollection($posts);
 
+    }
+
+    public function myPosts()
+    {
+        $userId = Auth::id();
+
+        $posts = $this->postService->getPostsByUserId($userId);
+
+        return new PostCollection($posts);
     }
 
     public function show($id)

@@ -31,6 +31,7 @@ Route::get('/profile', [\App\Http\Controllers\Api\V1\User\ProfileController::cla
 
 // post
 Route::get('/posts', [\App\Http\Controllers\Api\V1\Post\PostController::class, 'posts']);
+Route::get('/my-posts', [\App\Http\Controllers\Api\V1\Post\PostController::class, 'myPosts']);
 Route::get('/post/{id}', [\App\Http\Controllers\Api\V1\Post\PostController::class, 'show']);
 Route::post('/post/up', [\App\Http\Controllers\Api\V1\Post\PostController::class, 'up']);
 Route::post('/post/down', [\App\Http\Controllers\Api\V1\Post\PostController::class, 'down']);
