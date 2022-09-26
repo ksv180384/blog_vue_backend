@@ -33,8 +33,8 @@ Route::get('/profile', [\App\Http\Controllers\Api\V1\User\ProfileController::cla
 Route::get('/posts', [\App\Http\Controllers\Api\V1\Post\PostController::class, 'posts']);
 Route::get('/my-posts', [\App\Http\Controllers\Api\V1\Post\PostController::class, 'myPosts']);
 Route::get('/post/{id}', [\App\Http\Controllers\Api\V1\Post\PostController::class, 'show']);
-Route::post('/post/up', [\App\Http\Controllers\Api\V1\Post\PostController::class, 'up']);
-Route::post('/post/down', [\App\Http\Controllers\Api\V1\Post\PostController::class, 'down']);
+Route::put('/post/up', [\App\Http\Controllers\Api\V1\Post\PostController::class, 'up']);
+Route::put('/post/down', [\App\Http\Controllers\Api\V1\Post\PostController::class, 'down']);
 Route::post('/post/create', [\App\Http\Controllers\Api\V1\Post\PostController::class, 'store']);
 
 // comments

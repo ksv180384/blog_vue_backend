@@ -47,7 +47,7 @@ class PostService
 
         $posts = Post::postsList($userId)
             ->orderByDesc('created_at')
-            ->paginate(10);
+            ->paginate(3);
 
         return $posts;
     }
