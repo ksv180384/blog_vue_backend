@@ -42,6 +42,6 @@ Route::get('/post/comments/{postId}', [\App\Http\Controllers\Api\V1\Post\PostCom
 Route::get('/post/comments/parent/{postId}', [\App\Http\Controllers\Api\V1\Post\PostCommentController::class, 'commentsParentByPost']);
 Route::get('/post/comments/branch/{branchId}', [\App\Http\Controllers\Api\V1\Post\PostCommentController::class, 'commentsByBranch']);
 Route::post('/post/comment/create', [\App\Http\Controllers\Api\V1\Post\PostCommentController::class, 'store']);
-Route::post('/post/comment/up', [\App\Http\Controllers\Api\V1\Post\PostCommentController::class, 'up']);
-Route::post('/post/comment/down', [\App\Http\Controllers\Api\V1\Post\PostCommentController::class, 'down']);
+Route::put('/post/comment/up', [\App\Http\Controllers\Api\V1\Post\PostCommentController::class, 'up']);
+Route::put('/post/comment/down', [\App\Http\Controllers\Api\V1\Post\PostCommentController::class, 'down']);
 
