@@ -25,6 +25,7 @@ Route::get('/', [\App\Http\Controllers\Api\V1\IndexController::class, 'index'])-
 Route::post('/login', [\App\Http\Controllers\Api\V1\Auth\AuthController::class, 'login']);
 Route::post('/registration', [\App\Http\Controllers\Api\V1\Auth\AuthController::class, 'registration']);
 Route::post('/logout', [\App\Http\Controllers\Api\V1\Auth\AuthController::class, 'logout']);
+Route::post('/refresh', [\App\Http\Controllers\Api\V1\Auth\AuthController::class, 'refresh']);
 
 // user
 Route::get('user/{id}', [\App\Http\Controllers\Api\V1\User\ProfileController::class, 'profile'])->middleware(['get_auth_data']);
