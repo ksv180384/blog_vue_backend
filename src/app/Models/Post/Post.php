@@ -3,6 +3,7 @@
 namespace App\Models\Post;
 
 use App\Models\User\User;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
@@ -69,7 +70,8 @@ class Post extends Model
      * Дислайки поста
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function down(){
+    public function down(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
         return $this->hasMany(PostUp::class)->where('up', '=', 2);
     }
 
@@ -82,12 +84,20 @@ class Post extends Model
         return $this->hasOne(PostUp::class)->where('user_id', '=', $userId);
     }
 
-    public function getCreatedAtHumansAttribute()
+    /**
+     * @return mixed
+     */
+    public function getCreatedAtHumansAttribute(): string
     {
+        $daysSinceCreated = Carbon::now()->diffInDays($this->created_at);
+        if($daysSinceCreated >= 1){
+            return $this->created_at->format('d.m.Y H:i');
+        }
+
         return $this->created_at->diffForHumans();
     }
 
-    public function getRatingAttribute()
+    public function getRatingAttribute(): int
     {
         return $this->up_count - $this->down_count;
     }

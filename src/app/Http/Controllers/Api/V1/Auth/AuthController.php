@@ -5,9 +5,11 @@ namespace App\Http\Controllers\Api\V1\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegistrationRequest;
+use App\Http\Resources\User\UserResource;
 use App\Models\User\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
@@ -17,7 +19,7 @@ class AuthController extends Controller
             return $this->userResource($token);
         }
 
-        return response()->json(['message' => 'Неверный логин или пароль.'], 403);
+        throw ValidationException::withMessages(['password' => ['Неверный логин или пароль.']]);
     }
 
     public function registration(RegistrationRequest $request)
@@ -32,7 +34,7 @@ class AuthController extends Controller
             return $this->userResource($token);
         }
 
-        return response()->json(['message' => 'Ошибка.'], 403);
+        throw ValidationException::withMessages(['password' => ['Ошибка.']]);
     }
 
     /**
@@ -76,6 +78,9 @@ class AuthController extends Controller
 
     protected function userResource(string $jwtToken)
     {
-        return ['user' => ['token' => $jwtToken] + Auth::user()->toArray()];
+        return [
+            'user' => new UserResource(Auth::user()),
+            'token' => $jwtToken,
+        ];
     }
 }

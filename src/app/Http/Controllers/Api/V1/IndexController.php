@@ -27,7 +27,6 @@ class IndexController extends Controller
 
         return response()->json([
             'posts' => new PostCollection($posts),
-            'user' => Auth::check() ? Auth::user() : null,
         ]);
     }
 }

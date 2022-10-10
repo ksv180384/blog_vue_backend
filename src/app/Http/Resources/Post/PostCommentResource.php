@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Post;
 
+use App\Http\Resources\User\AuthorResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class PostCommentResource extends JsonResource
@@ -28,7 +29,7 @@ class PostCommentResource extends JsonResource
             'comment' => $this->comment,
             'up_count' => $this->up_count,
             'down_count' => $this->down_count,
-            'author' => $this->author,
+            'author' => new AuthorResource($this->author),
             'status' => $this->status,
             'rating' => $this->rating,
             'use_rating' => $this->up,

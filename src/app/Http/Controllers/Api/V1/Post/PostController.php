@@ -56,12 +56,10 @@ class PostController extends Controller
     {
         $post = $this->postService->getById($id);
         $postComments = $this->postCommentService->commentsParentByPost($id);
-        $user = Auth::check() ? Auth::user() : null;
 
         return response()->json([
             'post' => new PostResource($post),
             'comments' => new PostCommentCollection($postComments),
-            'user' => $user,
         ]);
     }
 

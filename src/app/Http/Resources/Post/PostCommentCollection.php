@@ -7,6 +7,7 @@ use Illuminate\Http\Resources\Json\ResourceCollection;
 class PostCommentCollection extends ResourceCollection
 {
     public static $wrap = 'comments';
+    public $collects = PostCommentResource::class;
 
     /**
      * Transform the resource collection into an array.

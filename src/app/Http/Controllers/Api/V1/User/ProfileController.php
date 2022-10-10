@@ -3,19 +3,38 @@
 namespace App\Http\Controllers\Api\V1\User;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\User\UpdateUserRequest;
+use App\Http\Resources\User\UserProfileResource;
 use App\Http\Resources\User\UserResource;
-use Illuminate\Http\Request;
+use App\Services\UserService;
 use Illuminate\Support\Facades\Auth;
 
 class ProfileController extends Controller
 {
-    public function __construct()
+    private $userService;
+
+    public function __construct(UserService $userService)
     {
-        $this->middleware('auth');
+        $this->middleware('auth')->except(['profile']);
+
+        $this->userService = $userService;
     }
 
-    public function profile()
+    public function profile($id)
     {
-        return new UserResource(Auth::user());
+        $user = $this->userService->getById($id);
+        return new UserProfileResource($user);
+    }
+
+    public function edit()
+    {
+        $user = $this->userService->getById(Auth::id());
+        return new UserProfileResource($user);
+    }
+
+    public function update(UpdateUserRequest $request)
+    {
+        $user = $this->userService->update(Auth::user(), $request);
+        return new UserProfileResource($user);
     }
 }

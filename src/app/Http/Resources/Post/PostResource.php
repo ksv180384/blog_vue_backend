@@ -2,7 +2,7 @@
 
 namespace App\Http\Resources\Post;
 
-use App\Models\Post\Post;
+use App\Http\Resources\User\AuthorResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class PostResource extends JsonResource
@@ -32,7 +32,7 @@ class PostResource extends JsonResource
             'first_image' => new PostImageResource($this->first_image),
             'up_count' => $this->up_count,
             'down_count' => $this->down_count,
-            'author' => $this->author,
+            'author' => new AuthorResource($this->author),
             'status' => $this->status,
             'rating' => $this->rating,
             'use_rating' => $useRating,

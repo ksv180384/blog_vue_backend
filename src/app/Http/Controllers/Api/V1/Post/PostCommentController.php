@@ -66,7 +66,7 @@ class PostCommentController extends Controller
     public function store(CreatePostCommentRequest $request)
     {
         $comment = $this->postCommentService->create($request->validated());
-        $postComments = $this->postCommentService->commentsTreeByBranch($comment->branch_id);
+        $postComments = $this->postCommentService->commentsTreeByComment($comment);
         return new PostCommentCollection($postComments);
     }
 

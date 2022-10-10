@@ -82,6 +82,17 @@ class PostCommentService
         return $postComments;
     }
 
+    public function commentsTreeByComment(PostComment $comment)
+    {
+        if($comment->branch_id){
+            $postComments = $this->commentsTreeByBranch($comment->branch_id);
+        }else{
+            $postComments = $this->commentsByPostId($comment->post_id);
+        }
+        //$postComments = $this->commentsTree($postComments);
+        return $postComments;
+    }
+
     /**
      * Формируем дерево комментариев
      * @param PostComment[] $postComments
@@ -134,8 +145,8 @@ class PostCommentService
         $comment = PostComment::create([
             'author_id' => $newCommentData['author_id'],
             'post_id' => $newCommentData['post_id'],
-            'branch_id' => $newCommentData['branch_id'],
-            'parent_id' => $newCommentData['parent_id'],
+            'branch_id' => !empty($newCommentData['branch_id']) ? $newCommentData['branch_id'] : null,
+            'parent_id' => !empty($newCommentData['parent_id']) ? $newCommentData['parent_id'] : null,
             'comment' => $newCommentData['comment'],
             'status_id' => $newCommentData['status_id'],
         ]);
