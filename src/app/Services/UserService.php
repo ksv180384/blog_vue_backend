@@ -35,7 +35,7 @@ class UserService
             'about' => $request->about,
         ]);
 
-        $file = $request->file('avatar');
+        $file = $request->file('avatar_file');
         if($file){
             $this->removeAvatar($user);
             $avatarName = 'avatar_' . uniqid() . '.' . $file->extension();

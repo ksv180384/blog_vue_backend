@@ -19,23 +19,25 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 */
 
-Route::get('/', [\App\Http\Controllers\Api\V1\IndexController::class, 'index'])->middleware('get_auth_data');
+
+Route::get('/', [\App\Http\Controllers\Api\V1\IndexController::class, 'index']);
 
 // auth
 Route::post('/login', [\App\Http\Controllers\Api\V1\Auth\AuthController::class, 'login']);
 Route::post('/registration', [\App\Http\Controllers\Api\V1\Auth\AuthController::class, 'registration']);
 Route::post('/logout', [\App\Http\Controllers\Api\V1\Auth\AuthController::class, 'logout']);
-Route::post('/refresh', [\App\Http\Controllers\Api\V1\Auth\AuthController::class, 'refresh']);
+Route::post('/refresh', [\App\Http\Controllers\Api\V1\Auth\AuthController::class, 'refresh'])->name('auth.refresh');
 
 // user
-Route::get('user/{id}', [\App\Http\Controllers\Api\V1\User\ProfileController::class, 'profile'])->middleware(['get_auth_data']);
-Route::get('user/profile/edit', [\App\Http\Controllers\Api\V1\User\ProfileController::class, 'edit'])->middleware(['get_auth_data']);
+Route::get('user/{id}', [\App\Http\Controllers\Api\V1\User\ProfileController::class, 'profile']);
+Route::get('user/profile/edit', [\App\Http\Controllers\Api\V1\User\ProfileController::class, 'edit']);
 Route::put('user/profile/update', [\App\Http\Controllers\Api\V1\User\ProfileController::class, 'update']);
 
 // post
 //Route::get('/posts', [\App\Http\Controllers\Api\V1\Post\PostController::class, 'posts']);
-Route::get('/my-posts', [\App\Http\Controllers\Api\V1\Post\PostController::class, 'myPosts']);
-Route::get('/post/{id}', [\App\Http\Controllers\Api\V1\Post\PostController::class, 'show'])->middleware('get_auth_data');
+Route::get('/posts/my-posts', [\App\Http\Controllers\Api\V1\Post\PostController::class, 'myPosts']);
+Route::get('/posts/top', [\App\Http\Controllers\Api\V1\Post\PostController::class, 'topPosts']);
+Route::get('/post/{id}', [\App\Http\Controllers\Api\V1\Post\PostController::class, 'show']);
 Route::put('/post/up', [\App\Http\Controllers\Api\V1\Post\PostController::class, 'up']);
 Route::put('/post/down', [\App\Http\Controllers\Api\V1\Post\PostController::class, 'down']);
 Route::post('/post/create', [\App\Http\Controllers\Api\V1\Post\PostController::class, 'store']);

@@ -2,17 +2,18 @@
 
 namespace App\Http\Controllers\Api\V1\Post;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Api\V1\BaseController;
 use App\Http\Requests\Post\CreatePostRequest;
 use App\Http\Requests\Post\UpdateRatingRequest;
 use App\Http\Resources\Post\PostCollection;
 use App\Http\Resources\Post\PostCommentCollection;
+use App\Http\Resources\Post\PostPaginateCollection;
 use App\Http\Resources\Post\PostResource;
 use App\Services\PostCommentService;
 use App\Services\PostService;
 use Illuminate\Support\Facades\Auth;
 
-class PostController extends Controller
+class PostController extends BaseController
 {
     /**
      * @var PostService
@@ -29,6 +30,8 @@ class PostController extends Controller
         PostCommentService $postCommentService
     )
     {
+        parent::__construct();
+
         $this->middleware('auth')->only(['myPosts', 'store', 'up', 'down']);
 
         $this->postService = $postService;
@@ -49,7 +52,13 @@ class PostController extends Controller
 
         $posts = $this->postService->getPostsByUserId($userId);
 
-        return new PostCollection($posts);
+        return response()->json(['posts' => new PostPaginateCollection($posts)]);
+    }
+
+    public function topPosts()
+    {
+        $posts = $this->postService->getPostsTop();
+        return response()->json(['posts' => new PostPaginateCollection($posts)]);
     }
 
     public function show($id)

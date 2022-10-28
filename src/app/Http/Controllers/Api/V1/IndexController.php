@@ -2,14 +2,10 @@
 
 namespace App\Http\Controllers\Api\V1;
 
-use App\Http\Controllers\Controller;
-use App\Http\Resources\Post\PostCollection;
-use App\Models\Post\Post;
+use App\Http\Resources\Post\PostPaginateCollection;
 use App\Services\PostService;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
-class IndexController extends Controller
+class IndexController extends BaseController
 {
     /**
      * @var PostService
@@ -18,6 +14,8 @@ class IndexController extends Controller
 
     public function __construct(PostService $postService)
     {
+        parent::__construct();
+
         $this->postService = $postService;
     }
 
@@ -26,7 +24,7 @@ class IndexController extends Controller
         $posts = $this->postService->getPosts();
 
         return response()->json([
-            'posts' => new PostCollection($posts),
+            'posts' => new PostPaginateCollection($posts),
         ]);
     }
 }

@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class Post extends Model
 {
@@ -97,7 +98,7 @@ class Post extends Model
         return $this->created_at->diffForHumans();
     }
 
-    public function getRatingAttribute(): int
+    public function getRatingCountAttribute(): int
     {
         return $this->up_count - $this->down_count;
     }
@@ -107,20 +108,37 @@ class Post extends Model
         return $this->images ? $this->images->first() : null;
     }
 
-    public function scopePostsList($query, $userId)
+    public function scopePostsList($query)
     {
+        $userId = Auth::check() ? Auth::id() : 0;
+        // Запрос формирует таблицу с учетом рейтига поста
+        $sqlPostRating = '
+            (
+                SELECT `posts`.`id`, (COUNT(`up_post`.`up`) - COUNT(`down_post`.`up`)) AS `rating`
+                    FROM `posts`
+                    LEFT JOIN `post_ups` AS `up_post` ON `up_post`.`post_id` = `posts`.`id` AND `up_post`.`up` = 1
+                    LEFT JOIN `post_ups` AS `down_post` ON `down_post`.`post_id` = `posts`.`id` AND `down_post`.`up` = 2
+                    GROUP BY `posts`.`id`
+            ) AS `ratings`
+        ';
+
         return $query->select([
             'posts.id',
             'posts.title',
-            'posts.content',
+            DB::raw('CONCAT(SUBSTRING(`posts`.`content`, 1, 600), "...") AS `content`'),
             'posts.status_id',
             'posts.author_id',
             'posts.created_at',
             'posts.updated_at',
-            'post_ups.up'
+            'ratings.rating'
         ])
-            ->leftJoin('post_ups', function($join) use ($userId) {
-                $join->on('post_ups.post_id', '=', 'posts.id')->where('post_ups.user_id', '=', $userId);
+            ->join(DB::raw($sqlPostRating), 'ratings.id', '=', 'posts.id')
+            ->when($userId, function ($q) use ($userId) {
+                return $q
+                    ->addSelect('post_ups.up')
+                    ->leftJoin('post_ups', function($join) use ($userId) {
+                    $join->on('post_ups.post_id', '=', 'posts.id')->where('post_ups.user_id', '=', $userId);
+                });
             })
             ->with(['author:id,name,avatar', 'status:id,title', 'useRating', 'images:id,post_id,path'])
             ->withCount(['up', 'down']);

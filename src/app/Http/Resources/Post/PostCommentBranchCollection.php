@@ -4,10 +4,11 @@ namespace App\Http\Resources\Post;
 
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
-class PostCollection extends ResourceCollection
+class PostCommentBranchCollection extends ResourceCollection
 {
-    public static $wrap = 'posts';
-    public $collects = PostListResource::class;
+    public static $wrap = 'comments';
+    public $collects = PostCommentBranchResource::class;
+
 
     /**
      * Transform the resource collection into an array.

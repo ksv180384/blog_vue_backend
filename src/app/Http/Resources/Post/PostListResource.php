@@ -5,15 +5,8 @@ namespace App\Http\Resources\Post;
 use App\Http\Resources\User\AuthorResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class PostResource extends JsonResource
+class PostListResource extends JsonResource
 {
-
-    /**
-     * Название объекта который будет в json
-     * @var string
-     */
-    public static $wrap = 'post';
-
     /**
      * Transform the resource into an array.
      *
@@ -28,16 +21,11 @@ class PostResource extends JsonResource
             'id' => $this->id,
             'title' => $this->title,
             'content' => $this->content,
-            'images' => $this->images ? (new PostImageCollection($this->images))->slice(1)->all() : null,
             'first_image' => new PostImageResource($this->first_image),
-            'up_count' => $this->up_count,
-            'down_count' => $this->down_count,
+            'use_rating' => $useRating,
             'author' => new AuthorResource($this->author),
             'status' => $this->status,
-            'rating' => $this->rating_count,
-            'use_rating' => $useRating,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
+            'rating' => $this->rating,
             'created_at_humans' => $this->created_at_humans,
         ];
     }

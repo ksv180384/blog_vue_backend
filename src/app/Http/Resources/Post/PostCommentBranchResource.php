@@ -5,19 +5,13 @@ namespace App\Http\Resources\Post;
 use App\Http\Resources\User\AuthorResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class PostCommentResource extends JsonResource
+class PostCommentBranchResource extends JsonResource
 {
-    /**
-     * Название объекта который будет в json
-     * @var string
-     */
-    public static $wrap = 'comment';
-
     /**
      * Transform the resource into an array.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return array|\Illuminate\Contracts\Support\Arrayable|\JsonSerializable|array
+     * @return array|\Illuminate\Contracts\Support\Arrayable|\JsonSerializable
      */
     public function toArray($request)
     {
@@ -27,6 +21,8 @@ class PostCommentResource extends JsonResource
             'parent_id' => $this->parent_id,
             'branch_id' => $this->branch_id,
             'comment' => $this->comment,
+            //'up_count' => $this->up_count,
+            //'down_count' => $this->down_count,
             'author' => new AuthorResource($this->author),
             'status' => $this->status,
             'rating' => $this->rating,
@@ -34,7 +30,8 @@ class PostCommentResource extends JsonResource
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'created_at_humans' => $this->created_at_humans,
-            'is_children' => $this->children_count > 0,
+            'children' => !empty($this->children) ? new PostCommentBranchCollection($this->children) : null,
+            //'children' => !empty($this->children) ? new PostCommentChildrenCollection($this->children) : null,
             'children_count' => $this->children_count,
         ];
     }

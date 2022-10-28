@@ -23,7 +23,7 @@ class ResponseAuthData
     {
         $response = $next($request);
 
-        if($response instanceof \Illuminate\Http\JsonResponse){
+        if($response instanceof \Illuminate\Http\JsonResponse && !$request->route()->named('auth.refresh')){
             $current_data = $response->getData();
             $current_data->auth_data = Auth::check() ? new UserResource(Auth::user()) : null;
             $response->setData($current_data);

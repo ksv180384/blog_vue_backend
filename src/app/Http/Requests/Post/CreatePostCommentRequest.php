@@ -49,6 +49,8 @@ class CreatePostCommentRequest extends FormRequest
             'parent_id.exists' => 'Невернй родительский комментарий',
             'comment.required' => 'Комментарий не должен быть пустым',
             'comment.min' => 'Минимальный размер комментария :min',
+            'author_id.required' => 'Неверно задан автор.',
+            'status_id.required' => 'Неверно задан статус.',
         ];
     }
 

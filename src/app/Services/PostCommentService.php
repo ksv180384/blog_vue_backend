@@ -2,6 +2,8 @@
 namespace App\Services;
 
 
+use App\Http\Resources\Post\PostCommentBranchCollection;
+use App\Http\Resources\Post\PostCommentCollection;
 use App\Models\Post\PostComment;
 use App\Models\Post\PostCommentUp;
 use Illuminate\Support\Facades\Auth;
@@ -46,7 +48,8 @@ class PostCommentService
      */
     public function commentsByPostId($id)
     {
-        $postComments = PostComment::commentsPost()
+        $postComments = PostComment::query()
+            ->commentsPost()
             ->where('post_id', $id)
             ->orderByDesc('created_at')
             ->get();
@@ -61,7 +64,8 @@ class PostCommentService
      */
     public function commentsByBranch($branchId)
     {
-        $postComments = PostComment::commentsPost()
+        $postComments = PostComment::query()
+            ->commentsPost()
             ->where('branch_id', $branchId)
             ->orWhere('id', $branchId)
             ->orderByDesc('created_at')
@@ -78,24 +82,32 @@ class PostCommentService
     public function commentsTreeByBranch($branchId)
     {
         $postComments = $this->commentsByBranch($branchId);
+        $postComments = new PostCommentBranchCollection($postComments);
         $postComments = $this->commentsTree($postComments);
+        //dd($postComments);
         return $postComments;
     }
 
+    /**
+     * Получаем комментарии для дерева коментариев
+     * @param PostComment $comment
+     * @return PostCommentBranchCollection|PostCommentCollection
+     */
     public function commentsTreeByComment(PostComment $comment)
     {
         if($comment->branch_id){
             $postComments = $this->commentsTreeByBranch($comment->branch_id);
+            $postComments = new PostCommentBranchCollection($postComments);
         }else{
             $postComments = $this->commentsByPostId($comment->post_id);
+            $postComments = new PostCommentCollection($postComments);
         }
-        //$postComments = $this->commentsTree($postComments);
         return $postComments;
     }
 
     /**
      * Формируем дерево комментариев
-     * @param PostComment[] $postComments
+     * @param PostCommentBranchCollection $postComments
      * @param null|int $parentId
      * @return \Illuminate\Support\Collection
      */
@@ -123,9 +135,10 @@ class PostCommentService
      */
     public function commentsParentByPost($postId)
     {
-        $postComments = PostComment::commentsPost()
+        $postComments = PostComment::query()
+            ->commentsPost()
             ->withCount(['children'])
-            ->with(['children'])
+            //->with(['children'])
             ->where('post_id', $postId)
             ->whereNull('parent_id')
             ->orderByDesc('created_at')

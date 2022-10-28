@@ -1,0 +1,6 @@
+{
+    "The :attribute must contain at least one uppercase and one lowercase letter.": "Пароль должен содержать как минимум одну заглавную, и одну маленькую букву.",
+    "The :attribute must contain at least one letter.": "Пароль должен содержать хотя бы одну букву.",
+    "The :attribute must contain at least one symbol.": "Пароль должен содержать хотя бы одину букву.",
+    "The :attribute must contain at least one number.": "Пароль должен содержать хотя бы одну цифру."
+}

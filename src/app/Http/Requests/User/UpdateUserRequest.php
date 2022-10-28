@@ -26,7 +26,7 @@ class UpdateUserRequest extends FormRequest
     {
         return [
             'name' => 'required|min:2',
-            'avatar' => 'nullable|sometimes|image|mimes:jpg,png,jpeg|max:5120',
+            'avatar_file' => 'nullable|sometimes|image|mimes:jpg,png,jpeg|max:10240',
             'about' => 'nullable|sometimes|min:2',
         ];
     }
@@ -36,9 +36,9 @@ class UpdateUserRequest extends FormRequest
         return [
             'name.required' => 'Введите ваше имя.',
             'name.min' => 'Имя не должно быть короче :min символов.',
-            'avatar.mimes' => 'Разрешенные изображения jpg,png,jpeg.',
-            'avatar.max' => 'Максимальный размер изображения 5 mb.',
-            'about.min' => '"О себе" должно быть не короче :min символов.',
+            'avatar_file.mimes' => 'Разрешенные изображения jpg,png,jpeg.',
+            'avatar_file.max' => 'Максимальный размер изображения 10 mb.',
+            'avatar_file.min' => '"О себе" должно быть не короче :min символов.',
         ];
     }
 }

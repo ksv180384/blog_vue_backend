@@ -6,26 +6,35 @@ use App\Models\Post\Post;
 use App\Models\Post\PostImage;
 use App\Models\Post\PostUp;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Intervention\Image\Facades\Image;
 
 class PostService
 {
 
+    const PAGINATE_OFFSET = 3;
+
+    /**
+     * Получаем пост
+     * @param $id
+     * @return mixed
+     */
     public function getById($id)
     {
         $userId = Auth::check() ? Auth::id() : 0;
 
-        $post = Post::select([
-            'posts.id',
-            'posts.title',
-            'posts.content',
-            'posts.status_id',
-            'posts.author_id',
-            'posts.created_at',
-            'posts.updated_at',
-            'post_ups.up'
-        ])
+        $post = Post::query()
+            ->select([
+                'posts.id',
+                'posts.title',
+                'posts.content',
+                'posts.status_id',
+                'posts.author_id',
+                'posts.created_at',
+                'posts.updated_at',
+                'post_ups.up'
+            ])
             ->leftJoin('post_ups', function($join) use ($userId) {
                 $join->on('post_ups.post_id', '=', 'posts.id')->where('post_ups.user_id', '=', $userId);
             })
@@ -42,38 +51,59 @@ class PostService
      */
     public function getPosts()
     {
-
-        $userId = Auth::check() ? Auth::id() : 0;
-
-        $posts = Post::postsList($userId)
+        $posts = Post::query()
+            ->postsList()
             ->orderByDesc('created_at')
-            ->paginate(3);
-
-        return $posts;
-    }
-
-    public function getPostsByUserId($userId){
-        $posts = Post::postsList($userId)
-            ->orderByDesc('created_at')
-            ->where('posts.author_id', $userId)
-            ->paginate(10);
+            ->paginate(self::PAGINATE_OFFSET);
 
         return $posts;
     }
 
     /**
+     * Посты пользователя
+     * @param $userId
+     * @return mixed
+     */
+    public function getPostsByUserId($userId){
+        $posts = Post::query()
+            ->postsList()
+            ->orderByDesc('created_at')
+            ->where('posts.author_id', $userId)
+            ->paginate(self::PAGINATE_OFFSET);
+
+        return $posts;
+    }
+
+    /**
+     * Получаем посты с наибольшим рейтингом
+     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
+     */
+    public function getPostsTop()
+    {
+        $posts = Post::query()
+            ->postsList()
+            ->orderByDesc('rating')
+            ->paginate(self::PAGINATE_OFFSET);
+
+        return $posts;
+    }
+
+
+    /**
+     * Добавить новый пост
      * @param array $post
      */
     public function create($postData)
     {
-        $maxSize = 1024;
+        $maxWidth = 1024;
 
-        $post = Post::create([
-            'title' => $postData['title'],
-            'content' => $postData['content'],
-            'status_id' => $postData['status_id'],
-            'author_id' => Auth::id(),
-        ]);
+        $post = Post::query()
+            ->create([
+                'title' => $postData['title'],
+                'content' => $postData['content'],
+                'status_id' => $postData['status_id'],
+                'author_id' => Auth::id(),
+            ]);
 
         if(!empty($postData['images'])){
             foreach ($postData['images'] as $img) {
@@ -82,8 +112,8 @@ class PostService
 
                 $image = Image::make(file_get_contents($img['src']));
 
-                if($image->width() > $maxSize){
-                    $image->resize($maxSize, null, function($constraint) {
+                if($image->width() > $maxWidth){
+                    $image->resize($maxWidth, null, function($constraint) {
                         $constraint->aspectRatio();
                     })->save($path);
                 }else{
@@ -107,8 +137,8 @@ class PostService
      */
     public function up($id)
     {
-        $post = Post::findOrFail($id);
-        $userUseRating = PostUp::where('user_id', Auth::id())->where('post_id', $post->id)->first();
+        $post = Post::query()->findOrFail($id);
+        $userUseRating = PostUp::query()->where('user_id', Auth::id())->where('post_id', $post->id)->first();
 
         if($userUseRating){
             $userUseRating->delete();
@@ -131,8 +161,8 @@ class PostService
      */
     public function down($id)
     {
-        $post = Post::findOrFail($id);
-        $userUseRating = PostUp::where('user_id', Auth::id())->where('post_id', $post->id)->first();
+        $post = Post::query()->findOrFail($id);
+        $userUseRating = PostUp::query()->where('user_id', Auth::id())->where('post_id', $post->id)->first();
 
         if($userUseRating){
             $userUseRating->delete();

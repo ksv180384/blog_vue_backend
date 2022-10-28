@@ -11,7 +11,7 @@ class PostCommentUp extends Model
 
     protected $fillable = [
         'user_id',
-        'post_id',
+        'comment_id',
         'up',
     ];
 

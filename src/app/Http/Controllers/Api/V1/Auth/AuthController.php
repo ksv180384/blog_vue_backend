@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1\Auth;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Api\V1\BaseController;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegistrationRequest;
 use App\Http\Resources\User\UserResource;
@@ -13,8 +13,14 @@ use Illuminate\Validation\ValidationException;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
-class AuthController extends Controller
+class AuthController extends BaseController
 {
+    public function __construct()
+    {
+        parent::__construct();
+        $this->middleware('auth')->only(['logout']);
+    }
+
     public function login(LoginRequest $request)
     {
         if ($token = JWTAuth::attempt($request->validated())) {
@@ -46,12 +52,12 @@ class AuthController extends Controller
      */
     public function refresh()
     {
-        //return $this->respondWithToken(auth()->refresh());
         try {
             return $this->respondWithToken(auth()->refresh());
         }catch (JWTException $exception){
             return response()->json([
-                'message' => $exception->getMessage(),
+                //'message' => $exception->getMessage(),
+                'message' => 'Error token refresh.',
             ], 401);
         }
     }
@@ -68,7 +74,7 @@ class AuthController extends Controller
         return response()->json([
             'access_token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => auth()->factory()->getTTL() * 60
+            'expires_in' => (auth()->factory()->getTTL() * 60),
         ]);
     }
 
@@ -81,7 +87,7 @@ class AuthController extends Controller
     {
         auth()->logout();
 
-        return response()->json(['message' => 'Successfully logged out']);
+        return response()->json(['message' => 'Успешно вышел из системы.']);
     }
 
 

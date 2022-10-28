@@ -2,16 +2,15 @@
 
 namespace App\Http\Controllers\Api\V1\Post;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Api\V1\BaseController;
 use App\Http\Requests\Post\CreatePostCommentRequest;
 use App\Http\Requests\Post\UpdateRatingPostComment;
+use App\Http\Resources\Post\PostCommentBranchCollection;
 use App\Http\Resources\Post\PostCommentCollection;
 use App\Http\Resources\Post\PostCommentResource;
-use App\Models\Post\PostComment;
 use App\Services\PostCommentService;
-use Illuminate\Http\Request;
 
-class PostCommentController extends Controller
+class PostCommentController extends BaseController
 {
     /**
      * @var PostCommentService
@@ -20,7 +19,9 @@ class PostCommentController extends Controller
 
     public function __construct(PostCommentService $postCommentService)
     {
-        $this->middleware('auth')->only(['up', 'down']);
+        parent::__construct();
+
+        $this->middleware('auth')->only(['up', 'down', 'store']);
 
         $this->postCommentService = $postCommentService;
     }
@@ -50,24 +51,24 @@ class PostCommentController extends Controller
     /**
      * Комментарии одной ветки
      * @param $branchId
-     * @return PostCommentCollection
+     * @return PostCommentBranchCollection
      */
     public function commentsByBranch($branchId)
     {
         $postComments = $this->postCommentService->commentsTreeByBranch($branchId);
-        return new PostCommentCollection($postComments);
+        return new PostCommentBranchCollection($postComments);
     }
 
     /**
      * Добавляем комментарий
      * @param CreatePostCommentRequest $request
-     * @return PostCommentCollection
+     * @return PostCommentBranchCollection|PostCommentCollection
      */
     public function store(CreatePostCommentRequest $request)
     {
         $comment = $this->postCommentService->create($request->validated());
         $postComments = $this->postCommentService->commentsTreeByComment($comment);
-        return new PostCommentCollection($postComments);
+        return response()->json(['comments' => $postComments]);
     }
 
     /**

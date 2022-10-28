@@ -5,6 +5,7 @@ namespace App\Models\Post;
 use App\Models\User\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class PostComment extends Model
 {
@@ -31,7 +32,7 @@ class PostComment extends Model
     }
 
     /**
-     * Автор комментария
+     * Пост к которому был оставлен комментарий
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
     function post(): \Illuminate\Database\Eloquent\Relations\HasOne
@@ -57,11 +58,22 @@ class PostComment extends Model
     }
 
     /**
+     * Получаем голос пользователя
+     * @return \Illuminate\Database\Eloquent\Relations\hasOne
+     */
+    public function useRating(){
+        $userId = Auth::check() ? Auth::id() : 0;
+        return $this->hasOne(PostCommentUp::class, 'comment_id', 'id')
+            ->where('user_id', '=', $userId);
+    }
+
+    /**
      * Лайки
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function up(){
-        return $this->hasMany(PostCommentUp::class, 'comment_id', 'id')->where('up', '=', 1);
+        return $this->hasMany(PostCommentUp::class, 'comment_id', 'id')
+            ->where('up', '=', 1);
     }
 
     /**
@@ -104,7 +116,7 @@ class PostComment extends Model
     public function scopeCommentsPost($query)
     {
         return $query
-            ->with(['author:id,name,avatar'])
+            ->with(['author:id,name,avatar', 'status:id,title', 'useRating:id,comment_id,up'])
             ->withCount(['comments', 'up', 'down']);
     }
 }

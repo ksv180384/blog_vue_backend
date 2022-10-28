@@ -2,19 +2,20 @@
 
 namespace App\Http\Controllers\Api\V1\User;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Api\V1\BaseController;
 use App\Http\Requests\User\UpdateUserRequest;
 use App\Http\Resources\User\UserProfileResource;
-use App\Http\Resources\User\UserResource;
 use App\Services\UserService;
 use Illuminate\Support\Facades\Auth;
 
-class ProfileController extends Controller
+class ProfileController extends BaseController
 {
     private $userService;
 
     public function __construct(UserService $userService)
     {
+        parent::__construct();
+
         $this->middleware('auth')->except(['profile']);
 
         $this->userService = $userService;
