@@ -29,6 +29,7 @@ php artisan storage:link
 php artisan cache:clear
 php artisan config:clear
 php artisan view:clear
+
 php artisan migrate:fresh --seed
 php artisan jwt:secret
 
