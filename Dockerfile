@@ -1,66 +1,34 @@
 FROM php:7.4-fpm
 
-LABEL maintainer="Mohammad Rahmani <rto1680@gmail.com>"
+WORKDIR /var/www/blog
 
-RUN apt-get update
-RUN apt install -y apt-utils
+RUN apt-get update -y && apt-get install -y  \
+    build-essential \
+    libzip-dev \
+    libpng-dev \
+    libjpeg62-turbo-dev \
+    libwebp-dev libjpeg62-turbo-dev libpng-dev libxpm-dev \
+    libfreetype6 \
+    libfreetype6-dev \
+    locales \
+    zip \
+    jpegoptim optipng pngquant gifsicle \
+    vim \
+    unzip \
+    git \
+    curl
 
-# Install dependencies
-RUN apt-get install -qq -y \
-  curl \
-  git \
-  libzip-dev \
-  zlib1g-dev \
-  zip unzip
+RUN docker-php-ext-install pdo_mysql zip exif pcntl
 
-RUN apt install -y libmcrypt-dev libicu-dev libxml2-dev
-RUN apt-get install -y libjpeg-dev libpng-dev libfreetype6-dev libjpeg62-turbo-dev
-RUN docker-php-ext-configure gd --with-freetype=/usr/include/ --with-jpeg=/usr/include/
-RUN docker-php-ext-install gd
+RUN curl -sS https://getcomposer.org/installer | php --  \
+    --install-dir=/usr/local/bin --filename=composer
 
-RUN apt install -y libmagickwand-dev --no-install-recommends && \
-  pecl install imagick && docker-php-ext-enable imagick
+ENV COMPOSER_ALLOW_SUPERUSER=1
 
-# Clear cache
-RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+COPY . /var/www/blog
 
-# Install extensions
-RUN docker-php-ext-install \
-  bcmath \
-  pdo_mysql \
-  pcntl \
-  zip \
-  pdo \
-  ctype \
-  tokenizer \
-  fileinfo \
-  xml \
-  intl
+RUN chown -R www-data:www-data /var/www/blog
 
-# Install composer
-RUN curl -sS https://getcomposer.org/installer | php -- \ 
-  --install-dir=/usr/local/bin --filename=composer && chmod +x /usr/local/bin/composer 
+EXPOSE 9000
 
-RUN rm /bin/sh && ln -s /bin/bash /bin/sh
-
-ENV NODE_VERSION=15.4.0
-
-RUN curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | bash
-
-ENV NVM_DIR=/root/.nvm
-
-RUN . "$NVM_DIR/nvm.sh" && nvm install ${NODE_VERSION}
-RUN . "$NVM_DIR/nvm.sh" && nvm use v${NODE_VERSION}
-RUN . "$NVM_DIR/nvm.sh" && nvm alias default v${NODE_VERSION}
-ENV PATH="/root/.nvm/versions/node/v${NODE_VERSION}/bin/:${PATH}"
-
-COPY . /var/www
-
-WORKDIR /var/www
-
-Run npm install
-
-RUN chown -R www-data:www-data /var/www
-#RUN chmod -R 755 /var/www/storage
-
-CMD php-fpm
+ENTRYPOINT ["entrypoint"]

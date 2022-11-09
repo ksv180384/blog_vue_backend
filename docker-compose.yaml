@@ -1,0 +1,73 @@
+version: '3.7'
+services:
+
+  #PHP Service
+  blog_vue_app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: blog_vue_app
+    #    restart: unless-stopped
+    restart: "no"
+    tty: true
+    volumes:
+      - ./:/var/www/blog
+      - ./_docker/php/php.ini:/usr/local/etc/php/php.ini
+      - ./_docker/entrypoint.sh:/entrypoint.sh
+    entrypoint: /entrypoint.sh
+    command: php-fpm
+    networks:
+      - app-blog
+
+  #Nginx Service
+  blog_vue_nginx:
+    container_name: blog_vue_nginx
+    image: nginx:stable-alpine
+    ports:
+      - "8083:80"
+    volumes:
+      - ./:/var/www/blog
+      - ./_docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - blog_vue_app
+      - blog_vue_db
+    networks:
+      - app-blog
+
+  #MySQL Service
+  blog_vue_db:
+    container_name: blog_vue_db
+    image: mariadb:10.1.14
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./_docker/mysql/dbdata:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: blog_vue
+      MYSQL_USER: root
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_PASSWORD: root
+    networks:
+      - app-blog
+
+  blog_vue_phpmyadmin:
+    container_name: blog_vue_phpmyadmin
+    image: phpmyadmin/phpmyadmin
+    links:
+      - blog_vue_db:db
+    restart: always
+    ports:
+      - "8084:80"
+    environment:
+      PMA_HOST: blog_vue_db
+      MYSQL_ROOT_PASSWORD: root
+      PMA_ARBITRARY: 1
+    networks:
+      - app-blog
+
+#Docker Networks
+networks:
+  app-blog:
+    driver: bridge
