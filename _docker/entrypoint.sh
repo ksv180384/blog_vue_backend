@@ -25,7 +25,6 @@ chmod -R 0777 /storage
 echo "Running artisan commands to get the app provisioned..."
 php artisan key:generate
 php artisan storage:link
-
 php artisan cache:clear
 php artisan config:clear
 php artisan view:clear
