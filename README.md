@@ -22,9 +22,12 @@ password: `password`
 
 #### Если вы НЕ используете Docker
 
+#### Необходимая версия PHP 7.4
 - После клонирования репоситория, в корневой папке переименуйте файл `.env.example` в `.env`
-
+- Измените настройки подключения к БД в `.env`
+- Создайте в БД таблицу `blog_vue`
 - Выпоните в консоле комманды:
+  - `composer install`  
   - `php artisan key:generate`  
   - `php artisan storage:link`  
   - `php artisan migrate:fresh --seed`  
