@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,5 +14,12 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', [\App\Http\Controllers\IndexController::class, 'index'])->name('index');
+//Route::get('/', [\App\Http\Controllers\IndexController::class, 'index'])->name('index');
+Route::get('{any}', [\App\Http\Controllers\IndexController::class, 'index'])->where('any', '.*')->name('index');
+
+//Route::get('/artisan', function(){
+//    Artisan::call('key:generate');
+//    Artisan::call('storage:link');
+//    Artisan::call('jwt:secret');
+//});
 

@@ -20,7 +20,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 */
 
 
-Route::get('/', [\App\Http\Controllers\Api\V1\IndexController::class, 'index']);
+Route::get('/index', [\App\Http\Controllers\Api\V1\IndexController::class, 'index']);
 
 // auth
 Route::post('/login', [\App\Http\Controllers\Api\V1\Auth\AuthController::class, 'login']);

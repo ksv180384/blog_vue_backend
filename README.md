@@ -5,9 +5,9 @@
 login: `test@test.ru`  
 password: `password`
 
-[Demo](https://laravel.com/docs/routing).
+[Demo](https://site5.ksv-test.ru/).
 
-#### [Блог Frontend](https://laravel.com/docs/routing)
+#### [Блог Frontend](https://github.com/ksv180384/blog_vue_frontend)
 
 ### Порядок установки 
 
@@ -29,5 +29,5 @@ password: `password`
   - `php artisan migrate:fresh --seed`  
   - `php artisan jwt:secret`
   
-- Настройте сервер, чтоб он был доступен по пути `http://blog-vue.local`
+- Настройте сервер, чтоб приложение было доступно по адресу `http://blog-vue.local`
 
