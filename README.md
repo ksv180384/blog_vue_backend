@@ -16,6 +16,7 @@ password: `password`
 #### Если вы используете Docker
 
 - После клонирования репоситория выполнить команду `docker compose up`
+- backend будет доступен по адресу `http://localhost:8083`, `http://localhost:8083/api/v1/index`
 
 ---
 
