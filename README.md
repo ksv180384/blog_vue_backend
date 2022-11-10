@@ -1,6 +1,6 @@
 ## Блог (backend)
 
-#### PHP, Laravel, mysql
+#### PHP, composer, Laravel, mysql
 
 login: `test@test.ru`  
 password: `password`
