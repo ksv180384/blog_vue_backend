@@ -48,6 +48,9 @@ class User extends Authenticatable implements JWTSubject
 
     public function getAvatarSrcAttribute()
     {
+        if(!$this->avatar){
+            return asset('img/no_avatar.jpe');
+        }
         if(!(str_replace(['http://', 'https://'], '', $this->avatar) === $this->avatar)){
             return $this->avatar;
         }
