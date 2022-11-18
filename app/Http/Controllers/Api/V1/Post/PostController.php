@@ -11,6 +11,7 @@ use App\Http\Resources\Post\PostPaginateCollection;
 use App\Http\Resources\Post\PostResource;
 use App\Services\PostCommentService;
 use App\Services\PostService;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class PostController extends BaseController

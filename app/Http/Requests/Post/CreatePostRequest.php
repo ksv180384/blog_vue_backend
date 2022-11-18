@@ -28,7 +28,7 @@ class CreatePostRequest extends FormRequest
         return [
             'title' => 'required|min:2',
             'content' => 'required|min:2',
-            'images.*.src' => 'base64image',
+            'images.*' => 'nullable',
             'status_id' => 'exists:post_statuses,id',
         ];
     }
@@ -46,6 +46,9 @@ class CreatePostRequest extends FormRequest
             'content.required' => 'Введите текст поста',
             'content.min' => 'Слишком короткий текст поста',
             'status_id.exists' => 'Неверный статус',
+            'images.*.mimes' => 'Разрешенные изображения jpg,png,jpeg.',
+            'images.*.max' => 'Максимальный размер изображения 10 mb.',
+            'images.*.image' => 'Загружаемый файл не является картинкой.',
         ];
     }
 
@@ -56,7 +59,7 @@ class CreatePostRequest extends FormRequest
      */
     protected function prepareForValidation()
     {
-        $data = $this->all();
+        $data = $this->all(['published']);
 
         if(!empty($data['published'])){
             $status = PostStatus::where('slug', 'opublikovan')->first();

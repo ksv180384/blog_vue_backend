@@ -6,7 +6,6 @@ use App\Models\Post\Post;
 use App\Models\Post\PostImage;
 use App\Models\Post\PostUp;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Intervention\Image\Facades\Image;
@@ -108,12 +107,12 @@ class PostService
 
         if(!empty($postData['images'])){
             foreach ($postData['images'] as $img) {
-                $file_img = Str::random(10) . '.png';
+                $file_img = Str::random(10) . '.' . $img->getClientOriginalExtension();
                 $catalog = storage_path('app/public/posts');
                 Storage::disk('public')->makeDirectory('posts');
                 $path = $catalog . '/' . $file_img;
 
-                $image = Image::make(file_get_contents($img['src']));
+                $image = Image::make($img);
 
                 if($image->width() > $maxWidth){
                     $image->resize($maxWidth, null, function($constraint) {
