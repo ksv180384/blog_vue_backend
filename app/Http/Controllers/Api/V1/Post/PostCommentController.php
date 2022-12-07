@@ -62,7 +62,7 @@ class PostCommentController extends BaseController
     /**
      * Добавляем комментарий
      * @param CreatePostCommentRequest $request
-     * @return PostCommentBranchCollection|PostCommentCollection
+     * @return \Illuminate\Http\JsonResponse
      */
     public function store(CreatePostCommentRequest $request)
     {
