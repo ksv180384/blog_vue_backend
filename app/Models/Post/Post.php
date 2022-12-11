@@ -24,11 +24,11 @@ class Post extends Model
 
     /**
      * Автор поста
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    function author(): \Illuminate\Database\Eloquent\Relations\HasOne
+    function author(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
-        return $this->hasOne(User::class, 'id', 'author_id');
+        return $this->belongsTo(User::class, 'author_id', 'id');
     }
 
     /**
